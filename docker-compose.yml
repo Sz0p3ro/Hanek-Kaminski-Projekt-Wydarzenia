@@ -12,5 +12,19 @@ services:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  spring-app:
+      build: .
+      container_name: event-management-app
+      ports:
+        - "8080:8080"
+      depends_on:
+        - postgres
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/eventdb
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: admin
+        SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      restart: unless-stopped
+
 volumes:
   postgres-data:
