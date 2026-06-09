@@ -2,10 +2,11 @@ package com.eventsystem.event_management.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "tickets")
-public class Ticket {
+public abstract class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,4 +43,9 @@ public class Ticket {
     public LocalDateTime getBookingTime() { return bookingTime; }
     public String getTicketCode() { return ticketCode; }
     public void setTicketCode(String ticketCode) { this.ticketCode = ticketCode; }
+    public abstract double calculatePrice();
+    @JsonProperty("price")
+    public double getPrice() {
+        return calculatePrice();
+    }
 }
