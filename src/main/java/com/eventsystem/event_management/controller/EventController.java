@@ -2,6 +2,7 @@ package com.eventsystem.event_management.controller;
 
 import com.eventsystem.event_management.model.Event;
 import com.eventsystem.event_management.repository.EventRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,10 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
+    public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event) {
+        if (event.getSoldTickets() == null) {
+            event.setSoldTickets(0);
+        }
         Event savedEvent = eventRepository.save(event);
         return new ResponseEntity<>(savedEvent, HttpStatus.CREATED);
     }

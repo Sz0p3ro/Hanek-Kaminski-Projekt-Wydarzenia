@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.validation.annotation.Validated;
+import jakarta.validation.constraints.Email;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/tickets")
 @SecurityRequirement(name = "basicAuth")
+@Validated
 public class TicketController {
 
     private final TicketRepository ticketRepository;
@@ -39,7 +42,7 @@ public class TicketController {
 
 
     @PostMapping("/book")
-    public ResponseEntity<?> bookTicket(@RequestParam Long eventId, @RequestParam String email, @RequestParam String ticketType) {
+    public ResponseEntity<?> bookTicket(@RequestParam Long eventId, @RequestParam @Email(message = "Nieprawidłowy format adresu email") String email, @RequestParam String ticketType) {
         Event event = eventRepository.findById(eventId).orElse(null);
         User user = userRepository.findByEmail(email).orElse(null);
 
@@ -47,11 +50,19 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nie znaleziono wydarzenia lub użytkownika.");
         }
 
+        if (!event.hasAvailableSeats()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Brak wolnych miejsc na to wydarzenie!");
+        }
+
         String ticketCode = "TICKET-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
         try {
             Ticket ticket = ticketFactory.createTicket(ticketType, user, event, ticketCode);
             Ticket savedTicket = ticketRepository.save(ticket);
+
+            event.setSoldTickets(event.getSoldTickets() + 1);
+            eventRepository.save(event);
+
             return new ResponseEntity<>(savedTicket, HttpStatus.CREATED);
 
         } catch (IllegalArgumentException e) {

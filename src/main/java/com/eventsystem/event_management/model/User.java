@@ -1,6 +1,8 @@
 package com.eventsystem.event_management.model;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "users")
@@ -10,6 +12,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Email nie może być pusty")
+    @Email(message = "Nieprawidłowy format adresu email")
     @Column(nullable = false, unique = true)
     private String email;
 
