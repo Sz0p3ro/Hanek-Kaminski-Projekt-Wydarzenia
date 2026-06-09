@@ -1,5 +1,6 @@
 package com.eventsystem.event_management.controller;
 
+import com.eventsystem.event_management.factory.TicketFactory;
 import com.eventsystem.event_management.model.Event;
 import com.eventsystem.event_management.model.Ticket;
 import com.eventsystem.event_management.model.User;
@@ -22,11 +23,13 @@ public class TicketController {
     private final TicketRepository ticketRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final TicketFactory ticketFactory;
 
-    public TicketController(TicketRepository ticketRepository, EventRepository eventRepository, UserRepository userRepository) {
+    public TicketController(TicketRepository ticketRepository, EventRepository eventRepository, UserRepository userRepository, TicketFactory ticketFactory) {
         this.ticketRepository = ticketRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.ticketFactory = ticketFactory;
     }
 
     @GetMapping("/all")
@@ -36,20 +39,23 @@ public class TicketController {
 
 
     @PostMapping("/book")
-    public ResponseEntity<?> bookTicket(@RequestParam Long eventId, @RequestParam String email) {
+    public ResponseEntity<?> bookTicket(@RequestParam Long eventId, @RequestParam String email, @RequestParam String ticketType) {
         Event event = eventRepository.findById(eventId).orElse(null);
-        User user = userRepository.findAll().stream()
-                .filter(u -> u.getEmail().equals(email))
-                .findFirst().orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
 
         if (event == null || user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nie znaleziono wydarzenia lub użytkownika.");
         }
 
         String ticketCode = "TICKET-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        Ticket ticket = new Ticket(user, event, ticketCode);
-        Ticket savedTicket = ticketRepository.save(ticket);
 
-        return new ResponseEntity<>(savedTicket, HttpStatus.CREATED);
+        try {
+            Ticket ticket = ticketFactory.createTicket(ticketType, user, event, ticketCode);
+            Ticket savedTicket = ticketRepository.save(ticket);
+            return new ResponseEntity<>(savedTicket, HttpStatus.CREATED);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
