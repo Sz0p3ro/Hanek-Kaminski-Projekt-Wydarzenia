@@ -33,7 +33,7 @@ public class Event {
 
     public Event() {}
 
-    public Event(String title, String description, LocalDateTime dateTime) {
+    public Event(String title, String description, LocalDateTime dateTime, Integer maxCapacity) {
         this.title = title;
         this.description = description;
         this.dateTime = dateTime;
