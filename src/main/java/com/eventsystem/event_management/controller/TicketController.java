@@ -38,9 +38,9 @@ public class TicketController {
     @PostMapping("/book")
     public ResponseEntity<?> bookTicket(@RequestParam Long eventId, @RequestParam String email) {
         Event event = eventRepository.findById(eventId).orElse(null);
-        User user = userRepository.findAll().stream()
-                .filter(u -> u.getEmail().equals(email))
-                .findFirst().orElse(null);
+
+        // Szybkie zapytanie po indeksie (wykorzystuje Twoją metodę z interfejsu)
+        User user = userRepository.findByEmail(email).orElse(null);
 
         if (event == null || user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nie znaleziono wydarzenia lub użytkownika.");
