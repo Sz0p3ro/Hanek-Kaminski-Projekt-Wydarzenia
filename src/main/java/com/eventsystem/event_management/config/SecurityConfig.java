@@ -33,11 +33,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/events/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/events/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/events/**").hasAnyAuthority("USER", "ADMIN", "ROLE_USER", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/events/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
 
-                        .requestMatchers("/api/tickets/book").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/tickets/all").hasRole("ADMIN")
+                        .requestMatchers("/api/tickets/book").hasAnyAuthority("USER", "ADMIN", "ROLE_USER", "ROLE_ADMIN")
+                        .requestMatchers("/api/tickets/all").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
 
                         .anyRequest().authenticated()
                 )
