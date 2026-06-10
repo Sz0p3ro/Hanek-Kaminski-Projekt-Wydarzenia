@@ -13,12 +13,12 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            if (userRepository.findByEmail("admin@event.pl").isEmpty()) {
+            if (!userRepository.findByEmail("admin@event.pl").isPresent()) {
                 User admin = new User("admin@event.pl", passwordEncoder.encode("admin123"), Role.ADMIN);
                 userRepository.save(admin);
             }
 
-            if (userRepository.findByEmail("user@event.pl").isEmpty()) {
+            if (!userRepository.findByEmail("user@event.pl").isPresent()) {
                 User user = new User("user@event.pl", passwordEncoder.encode("user123"), Role.USER);
                 userRepository.save(user);
             }
