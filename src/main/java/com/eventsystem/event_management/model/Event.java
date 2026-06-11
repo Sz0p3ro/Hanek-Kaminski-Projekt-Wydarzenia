@@ -21,14 +21,14 @@ public class Event {
     private String description;
 
     @Future(message = "Data wydarzenia musi być w przyszłości")
-    @Column(nullable = false)
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
     @Min(value = 1, message = "Wydarzenie musi mieć co najmniej 1 miejsce")
-    @Column(nullable = false)
+    @Column(name = "max_capacity", nullable = false)
     private Integer maxCapacity;
 
-    @Column(nullable = false)
+    @Column(name = "sold_tickets", nullable = false)
     private Integer soldTickets = 0;
 
     public Event() {}
