@@ -14,6 +14,6 @@ public class VipTicket extends Ticket {
 
     @Override
     public double calculatePrice() {
-        return 150.0; // VIP jest droższy
+        return 150.0;
     }
 }
