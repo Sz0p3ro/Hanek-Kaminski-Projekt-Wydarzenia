@@ -114,7 +114,8 @@ Model relacyjny wygenerowany na podstawie migracji Flyway (obrazuje tabele users
 ### 2. Historia Git Flow (Branching i Pull Requests)
 Zastosowano systematyczne, opisowe i podpisane commity. Zmiany wdrażano zgodnie z dobrymi praktykami za pomocą mechanizmu Pull Requests (gałęzie feature).
 
-![Git Flow i PR](images/git.png)
+![Git Flow i PR](images/COMMITS_1.png)
+![Git Flow i PR](images/COMMITS_2.png)
 
 ### 3. Pokrycie Kodu Testami (Raport JaCoCo)
 Zrzut ekranu raportu potwierdzający spełnienie krytycznego wymogu testowania. Kod logiki biznesowej, dzięki wykorzystaniu JUnit 5 i bazy H2 w pamięci, pokryto testami w stopniu przekraczającym wymagane 80%.
